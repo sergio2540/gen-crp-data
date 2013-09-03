@@ -1,0 +1,24 @@
+#!/usr/bin/env node
+
+var cpdstream = require('../lib/cpdstream');
+var es = require('event-stream');
+var program = require('commander');
+var JSONStream = require('JSONStream');
+
+
+program.version('0.0.0')
+        .usage('[options] <file ...>')
+	.option('-c, --compress <compress.js>','js file with compress and decompress functions')
+        .parse(process.argv);
+
+
+
+var compress = program.compress;
+
+
+es.pipeline(process.stdin,
+	    JSONStream.parse(),
+	    cpdstream(compress),
+	    JSONStream.stringify(false),
+	    process.stdout);
+
